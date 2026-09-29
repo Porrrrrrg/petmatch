@@ -28,23 +28,12 @@ const CAT_ENGINE=(()=>{
   return data.cats.filter(cat=>eligible(cat,a)).map(cat=>({cat,score:distance(cat,a)}))
    .sort((x,y)=>x.score-y.score||(a.origin==='open'&&x.cat.type!==y.cat.type?(x.cat.type==='domestic'?-1:1):0)||data.cats.indexOf(x.cat)-data.cats.indexOf(y.cat));
  }
- function lifestyle(a){
-  switch(a.outdoors){
-   case 'indoor':return 'Indoor life still needs play, perches, scratching and places to hide.';
-   case 'controlled':return 'A catio or supervised outing can add adventure while reducing outdoor risks.';
-   default:return 'Free roaming brings injury, infection and wildlife risks. Ask about safer outdoor access and the individual cat’s history.';
-  }
- }
  function match(a){
   validate(a);
   const list=ranked(a),cat=list[0]?.cat;
   if(!cat)throw Error('No eligible cat profile.');
-  const reasons=[];
-  if(a.readiness==='planning')reasons.push('A few move-in plans still need to come together.');
-  if(a.readiness==='dreaming')reasons.push('This is a cat to picture for another chapter.');
-  if(a.coverage==='uncertain')reasons.push('Your busy-day care plan needs a backup.');
-  const status=reasons.length?'future':'match';
-  return {status,cat,reasons,lifestyle:lifestyle(a),score:list[0].score};
+  const status=a.readiness!=='ready'||a.coverage==='uncertain'?'future':'match';
+  return {status,cat,outdoors:a.outdoors,score:list[0].score};
  }
  return {match,validate,eligible,distance,ranked,levels};
 })();

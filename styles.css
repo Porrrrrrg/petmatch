@@ -38,3 +38,40 @@
 .secondary{margin-top:20px}
 .result-below{display:flex;justify-content:center;gap:23px;margin-top:18px}
 @media(max-width:360px){.welcome h1{font-size:2.75rem}.cat-portrait{width:152px;height:152px}.result-title{font-size:1.95rem}.cat-hero{margin-inline:-18px}}
+
+/* Animated cat cards */
+.welcome{padding-top:38px}
+.welcome h1{margin:0 0 5px}
+.result-card{padding:21px 22px 25px;background:linear-gradient(180deg,#fff 0%,#fff 75%,#fffcf5 100%)}
+.result-enter{animation:card-reveal .48s cubic-bezier(.2,.85,.27,1.15) both}
+.result-topline{gap:9px}
+.outdoor-tag{border:1px solid #d8dfed;border-radius:999px;padding:6px 9px;background:#fff;color:var(--ink);font-size:.66rem;letter-spacing:.7px;white-space:nowrap}
+.cat-stage{position:relative;display:block;width:100%;height:236px;margin:5px auto 1px;border:0;background:none;color:var(--blue);overflow:hidden;isolation:isolate}
+.cat-stage:focus-visible{outline-offset:-4px;border-radius:15px}
+.stage-halo{position:absolute;left:50%;top:16px;width:196px;height:196px;border-radius:50%;transform:translateX(-50%);background:radial-gradient(circle,#fff 34%,var(--card-accent) 72%,transparent 73%);opacity:.58;animation:halo-breathe 3.8s ease-in-out infinite}
+.cat-stage .cat-portrait{position:absolute;z-index:2;top:18px;left:50%;width:210px;height:210px;margin:0;display:block;transform:translateX(-50%);background-color:transparent;background-repeat:no-repeat;mix-blend-mode:multiply;clip-path:inset(3px 3px 12px 3px);animation:cat-float 3.1s ease-in-out infinite}
+.stage-shadow{position:absolute;z-index:1;bottom:12px;left:50%;width:134px;height:18px;border-radius:50%;transform:translateX(-50%);background:#24345b2b;filter:blur(7px);animation:shadow-breathe 3.1s ease-in-out infinite}
+.stage-star{position:absolute;z-index:3;font-size:25px;line-height:1;color:var(--blue);text-shadow:0 1px #fff;animation:star-twinkle 2.7s ease-in-out infinite}
+.stage-star-a{left:13%;top:27px}.stage-star-b{right:13%;top:65px;font-size:17px;animation-delay:.7s}.stage-star-c{left:18%;bottom:44px;font-size:16px;animation-delay:1.4s}
+.stage-play{position:absolute;z-index:4;right:8%;bottom:24px;width:33px;height:33px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%;background:var(--yellow);box-shadow:2px 2px 0 var(--ink);font-size:17px;animation:play-nudge 2.3s ease-in-out infinite}
+.cat-stage[data-pace="zippy"]{--jump:-30px}.cat-stage[data-pace="gentle"]{--jump:-17px}
+.cat-stage.is-pouncing .cat-portrait{animation:cat-pounce .72s cubic-bezier(.18,.7,.25,1)}
+.cat-stage.is-pouncing .stage-star{animation:star-burst .72s ease-out}
+.cat-stage.is-pouncing .stage-play{animation:play-spin .72s ease-out}
+.result-title{font-size:2.15rem;margin:0 0 9px}
+.cat-name{margin-bottom:16px}
+.result-scene{max-width:32ch;margin:0 auto 4px;font-size:1.08rem;line-height:1.38}
+.coat-picker{margin-top:18px;padding-top:14px}
+.coat-picker p{margin-bottom:9px}
+.result-below{margin-top:16px}
+@keyframes card-reveal{from{opacity:.25;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes halo-breathe{50%{opacity:.76;transform:translateX(-50%) scale(1.04)}}
+@keyframes cat-float{50%{transform:translateX(-50%) translateY(-6px)}}
+@keyframes shadow-breathe{50%{transform:translateX(-50%) scale(.86);opacity:.48}}
+@keyframes star-twinkle{50%{opacity:.25;transform:rotate(25deg) scale(.7)}}
+@keyframes play-nudge{50%{transform:translateY(-4px) rotate(15deg)}}
+@keyframes cat-pounce{0%,100%{transform:translateX(-50%) translateY(0) rotate(0)}35%{transform:translateX(-50%) translateY(var(--jump)) rotate(-5deg)}60%{transform:translateX(-50%) translateY(4px) rotate(3deg)}}
+@keyframes star-burst{40%{transform:scale(1.8) rotate(40deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:.5}}
+@keyframes play-spin{50%{transform:rotate(110deg) scale(1.22)}}
+@media(max-width:360px){.cat-stage{height:210px}.cat-stage .cat-portrait{width:186px;height:186px}.stage-halo{width:175px;height:175px}.result-title{font-size:1.95rem}.stage-star-a{left:9%}.stage-star-b{right:9%}}
+@media print{.cat-stage .cat-portrait,.stage-star,.stage-halo,.stage-play,.stage-shadow{animation:none!important}}
