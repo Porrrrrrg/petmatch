@@ -10,3 +10,31 @@
 .result-number{white-space:nowrap;flex-shrink:0}.ready-list{counter-reset:readiness}.ready-list li{counter-increment:readiness}.ready-list li::before{content:counter(readiness);font-size:.75rem;line-height:1.6;font-weight:700;min-width:14px}
 
 .edition{font-size:.75rem;letter-spacing:1px}.chapter,.result-topline,footer{font-size:.75rem}.back-button{width:44px;height:44px}.close-button{width:44px;height:44px;flex-basis:44px}
+
+/* Cat edition */
+.welcome{padding:30px 23px 24px}
+.welcome h1{font-size:clamp(2.75rem,11vw,3.45rem);line-height:1.03}
+.cat-hero{margin:18px -21px 15px;position:relative}
+.cat-hero img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+.time-sticker{width:72px;height:72px;right:11px;top:5px;line-height:1.04;letter-spacing:.2px;font-size:.69rem}
+.question-heading{margin-bottom:24px}
+.question-bottom:empty{margin-top:10px;min-height:0}
+.ready-list{margin-top:-5px;margin-bottom:19px;gap:9px}
+.result-card{padding:22px 23px 25px}
+.cat-portrait{width:174px;height:174px;margin:6px auto 3px;background-image:url('cat-atlas.png');background-size:300% 400%;background-repeat:no-repeat;background-color:#fff;clip-path:inset(0 0 12px 0)}
+.result-title{margin:0 0 9px;font-size:2.1rem}
+.cat-name{display:inline-block;background:var(--card-accent);border-radius:6px;padding:7px 10px;line-height:1.25;font-size:.88rem;font-weight:700;margin:0 0 16px}
+.scene-label{font-size:.7rem;letter-spacing:1.7px;font-weight:800;color:var(--blue);margin:0 0 7px}
+.result-scene{font-family:Georgia,'Times New Roman',serif;font-size:1.11rem;line-height:1.38;margin:0 0 17px}
+.care-note{background:var(--soft);border-radius:12px;padding:13px 14px;text-align:left;font-size:.87rem;line-height:1.45}
+.care-note strong{color:var(--blue)}
+.outdoor-note{font-size:.83rem;line-height:1.45;color:var(--muted);margin:14px 0 0}
+.future-note{font-size:.84rem;font-weight:700;line-height:1.45;background:#fff5d8;border-radius:9px;padding:11px 13px;margin:14px 0 0}
+.coat-picker{border-top:1px dashed #c9d1df;margin-top:17px;padding-top:14px}
+.coat-picker p{font-size:.75rem;font-weight:700;letter-spacing:.3px;margin:0 0 10px}
+.coat-options{display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
+.coat-chip{background:#fff;border:1px solid #cbd4e5;border-radius:30px;padding:7px 10px;font-size:.72rem;color:var(--ink)}
+.coat-chip[aria-pressed=true]{background:var(--blue);color:white;border-color:var(--blue)}
+.secondary{margin-top:20px}
+.result-below{display:flex;justify-content:center;gap:23px;margin-top:18px}
+@media(max-width:360px){.welcome h1{font-size:2.75rem}.cat-portrait{width:152px;height:152px}.result-title{font-size:1.95rem}.cat-hero{margin-inline:-18px}}

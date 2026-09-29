@@ -1,518 +1,68 @@
 'use strict';
-// Source-backed care facts; original question wording and illustrative ranking.
-const PET_DATA = {
-  "reviewed": "2026-09-26",
-  "sources": {
-    "avma": {
-      "name": "AVMA · Choosing a dog",
-      "url": "https://avma.org/resources/pet-owners/petcare/selecting-pet-dog"
-    },
-    "cat": {
-      "name": "AVMA · Choosing a cat",
-      "url": "https://ebusiness.avma.org/files/productdownloads/LR_COM_ClientBroch_SelectingACat_031416.pdf"
-    },
-    "pdsa": {
-      "name": "PDSA · Choosing a pet",
-      "url": "https://www.pdsa.org.uk/pet-help-and-advice/choosing-a-pet"
-    },
-    "whippet": {
-      "name": "PDSA · Whippet care",
-      "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/whippet"
-    },
-    "poodle": {
-      "name": "PDSA · Poodle care",
-      "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/large-dogs/poodle"
-    },
-    "mini": {
-      "name": "AKC · Miniature Poodle",
-      "url": "https://www.akc.org/dog-breeds/poodle-miniature/"
-    },
-    "lab": {
-      "name": "PDSA · Labrador care",
-      "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/large-dogs/labrador-retriever"
-    },
-    "british": {
-      "name": "TICA · British Shorthair",
-      "url": "https://tica.org/breed/british-shorthair/"
-    },
-    "guinea": {
-      "name": "Blue Cross · Guinea pig care",
-      "url": "https://www.bluecross.org.uk/advice/guinea-pig/guinea-pig-care"
-    },
-    "hamster": {
-      "name": "Blue Cross · Hamster care",
-      "url": "https://www.bluecross.org.uk/advice/hamster/hamster-care"
-    },
-    "betta": {
-      "name": "RSPCA · Betta care",
-      "url": "https://kb.rspca.org.au/categories/companion-animals/fish/how-should-i-care-for-my-siamese-fighting-fish"
-    },
-    "allergy": {
-      "name": "AAAAI · Pet allergies",
-      "url": "https://www.aaaai.org/conditions-treatments/allergies/pet-allergy"
-    },
-    "science": {
-      "name": "Morrill et al. · Science (2022)",
-      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9675396/"
-    },
-    "welfare": {
-      "name": "Mellor et al. · Five Domains (2020)",
-      "url": "https://doi.org/10.3390/ani10101870"
-    },
-    "adopter": {
-      "name": "ASPCA · Dog Adopter Survey",
-      "url": "https://www.aspca.org/sites/default/files/upload/images/dogadoptersurvey.pdf"
-    },
-    "mdors": {
-      "name": "Dwyer et al. · MDORS (2006)",
-      "url": "https://doi.org/10.2752/089279306785415592"
-    },
-    "dors": {
-      "name": "Bennett et al. · DORS (2025)",
-      "url": "https://doi.org/10.3390/ani15050632"
-    },
-    "expectations": {
-      "name": "Dogs Trust · Owner expectations (2024)",
-      "url": "https://www.frontiersin.org/journals/veterinary-science/articles/10.3389/fvets.2024.1331793/full"
-    },
-    "cbarq": {
-      "name": "Penn Vet · C-BARQ",
-      "url": "https://vetapps.vet.upenn.edu/cbarq/about.cfm"
-    },
-    "satisfaction": {
-      "name": "van Herwijnen et al. · Ownership satisfaction (2018)",
-      "url": "https://doi.org/10.1371/journal.pone.0204592"
-    }
-  },
-  "questions": [
-    {
-      "id": "activity",
-      "stage": "YOUR EVERYDAY PACE",
-      "title": "Rainy Tuesday. Still going out?",
-      "basis": [
-        "adopter",
-        "pdsa"
-      ],
-      "options": [
-        {
-          "value": "low",
-          "label": "Let's stay in."
-        },
-        {
-          "value": "medium",
-          "label": "An hour's walk? Sure."
-        },
-        {
-          "value": "high",
-          "label": "Two hours outside? Happily."
-        }
-      ]
-    },
-    {
-      "id": "connection",
-      "stage": "YOUR KIND OF COMPANY",
-      "title": "Best part of having a pet?",
-      "basis": [
-        "adopter",
-        "mdors",
-        "dors"
-      ],
-      "options": [
-        {
-          "value": "team",
-          "label": "Doing things together."
-        },
-        {
-          "value": "quiet",
-          "label": "A familiar face nearby."
-        },
-        {
-          "value": "watch",
-          "label": "A tiny world to watch."
-        }
-      ]
-    },
-    {
-      "id": "chores",
-      "stage": "BEHIND THE CUTE",
-      "title": "Feeding. Cleaning. Repeat. You’re…",
-      "basis": [
-        "mdors",
-        "dors",
-        "satisfaction"
-      ],
-      "options": [
-        {
-          "value": "enjoy",
-          "label": "Into it. Routines are my thing."
-        },
-        {
-          "value": "routine",
-          "label": "Fine with a daily care routine."
-        },
-        {
-          "value": "none",
-          "label": "Not up for daily care right now."
-        }
-      ]
-    },
-    {
-      "id": "coverage",
-      "stage": "WHILE YOU’RE OUT",
-      "title": "On a normal day, who’s home?",
-      "basis": [
-        "adopter"
-      ],
-      "options": [
-        {
-          "value": "home",
-          "label": "Me, or someone I trust."
-        },
-        {
-          "value": "help",
-          "label": "Away a lot. Care breaks covered."
-        },
-        {
-          "value": "long",
-          "label": "Away all day. No help yet."
-        }
-      ]
-    },
-    {
-      "id": "time",
-      "stage": "TIME TOGETHER",
-      "title": "Daily care time you can count on?",
-      "basis": [
-        "adopter",
-        "expectations"
-      ],
-      "options": [
-        {
-          "value": "little",
-          "label": "Under 30 minutes."
-        },
-        {
-          "value": "some",
-          "label": "30–60 minutes."
-        },
-        {
-          "value": "more",
-          "label": "1–2 hours."
-        },
-        {
-          "value": "lots",
-          "label": "2+ hours."
-        }
-      ]
-    },
-    {
-      "id": "setup",
-      "stage": "ROOM FOR A ROOMIE",
-      "title": "Where would your sidekick live?",
-      "basis": [
-        "welfare",
-        "pdsa"
-      ],
-      "options": [
-        {
-          "value": "rooms",
-          "label": "In pet-safe rooms with me."
-        },
-        {
-          "value": "habitat",
-          "label": "In a roomy animal habitat."
-        },
-        {
-          "value": "tank",
-          "label": "In a proper aquarium."
-        },
-        {
-          "value": "flexible",
-          "label": "Open to any of these."
-        },
-        {
-          "value": "none",
-          "label": "No space just yet."
-        }
-      ]
-    },
-    {
-      "id": "readiness",
-      "stage": "THE MOVE-IN CHECK",
-      "title": "Could a pet move in?",
-      "basis": [
-        "adopter",
-        "expectations",
-        "pdsa"
-      ],
-      "checklist": [
-        "Home permission + allergies checked",
-        "Daily care + travel cover",
-        "Setup, food + vet budget",
-        "Care through moves + life changes"
-      ],
-      "options": [
-        {
-          "value": "ready",
-          "label": "Yes. Those plans are in place."
-        },
-        {
-          "value": "planning",
-          "label": "A few things to figure out."
-        },
-        {
-          "value": "no",
-          "label": "Just here to daydream."
-        }
-      ]
-    }
-  ],
-  "pets": [
-    {
-      "id": "domestic",
-      "name": "Adult domestic shorthair",
-      "kind": "Cat · mixed-breed type, not a pedigree breed",
-      "archetype": "The Parallel-Play Pal",
-      "species": "cat",
-      "minTime": 1,
-      "exercise": 0,
-      "connection": [
-        "quiet",
-        "team"
-      ],
-      "grooming": 1,
-      "setup": "rooms",
-      "summary": "Explore an adult cat whose observed personality fits your home. A shelter or foster carer can help you meet the individual behind the label.",
-      "tradeoff": "Daily play and litter care still happen on deadline days. An adult cat is not a pet you can leave unattended for a weekend.",
-      "routine": "Plan feeding, litter cleaning, interactive play, scratching areas and places to hide. Ask about health, sociability and time-alone needs.",
-      "prototype": "Talk to a foster carer about one adult cat’s actual routine before making plans to adopt.",
-      "sources": [
-        "cat"
-      ],
-      "sprite": 0,
-      "number": "01",
-      "care": "litter",
-      "catch": "Litter duty. Every day. Yes, exam week too.",
-      "color": "#ffce4a",
-      "meetPrompt": "Ask its carer whether this cat seeks play and attention or prefers hanging out nearby."
-    },
-    {
-      "id": "whippet",
-      "name": "Whippet",
-      "kind": "Dog · pedigree breed · adult profile",
-      "archetype": "The Walk-Then-Flop Club",
-      "species": "dog",
-      "minTime": 2,
-      "exercise": 1,
-      "connection": [
-        "quiet",
-        "team"
-      ],
-      "grooming": 1,
-      "setup": "rooms",
-      "summary": "A Whippet is worth exploring when you can make space for both exercise and downtime, with someone reliably available for daily care.",
-      "tradeoff": "The relaxed reputation comes after exercise. Chase instincts mean safe, enclosed running space matters.",
-      "routine": "PDSA recommends at least an hour of daily exercise, plus play and training. Arrange secure off-lead space, companionship and gentle weekly brushing.",
-      "prototype": "Try the walking routine for a week and identify a genuinely secure exercise area.",
-      "sources": [
-        "whippet",
-        "avma",
-        "cbarq"
-      ],
-      "sprite": 1,
-      "number": "02",
-      "care": "walks",
-      "catch": "Couch time comes after exercise. Safe running space matters.",
-      "color": "#ffce4a",
-      "meetPrompt": "Ask about this dog’s chase behavior, activity needs and comfort spending time alone."
-    },
-    {
-      "id": "poodle",
-      "name": "Miniature Poodle",
-      "kind": "Dog · pedigree breed · adult profile",
-      "archetype": "The Side-Quest Squad",
-      "species": "dog",
-      "minTime": 2,
-      "exercise": 1,
-      "connection": [
-        "team"
-      ],
-      "grooming": 2,
-      "setup": "rooms",
-      "summary": "Explore a Miniature Poodle if shared activity and learning appeal to you and coat care can be part of the schedule.",
-      "tradeoff": "That coat needs regular upkeep, including professional clipping. Low shedding is not an allergy guarantee.",
-      "routine": "Combine walks, enrichment and reward-based training with frequent brushing and scheduled grooming. Confirm the individual dog’s needs with its carer.",
-      "prototype": "Price a local groomer, then test a daily walk-and-training block in your calendar.",
-      "sources": [
-        "mini",
-        "poodle",
-        "allergy",
-        "cbarq"
-      ],
-      "sprite": 2,
-      "number": "03",
-      "care": "walks",
-      "catch": "Grooming gets a recurring calendar invite.",
-      "color": "#ffd2bf",
-      "meetPrompt": "Ask about this dog’s comfort with grooming, interest in training and time-alone needs."
-    },
-    {
-      "id": "labrador",
-      "name": "Labrador Retriever",
-      "kind": "Dog · pedigree breed · adult profile",
-      "archetype": "The Outside Committee",
-      "species": "dog",
-      "minTime": 3,
-      "exercise": 2,
-      "connection": [
-        "team"
-      ],
-      "grooming": 1,
-      "setup": "rooms",
-      "summary": "A Labrador is a breed to investigate when substantial daily activity, training and a larger dog all fit your life.",
-      "tradeoff": "Exercise, training, shedding and a large-dog budget come with the companionship. Working lines can be especially demanding.",
-      "routine": "Plan substantial exercise and enrichment, regular brushing and weight management. Ask about joint and eye screening and the individual’s activity needs.",
-      "prototype": "Block out your proposed exercise time for seven days, then ask an owner about the parts you haven’t budgeted for.",
-      "sources": [
-        "lab",
-        "avma",
-        "cbarq"
-      ],
-      "sprite": 3,
-      "number": "04",
-      "care": "walks",
-      "catch": "Big activity needs. Big muddy-paw potential. Meet the individual dog.",
-      "color": "#ffce4a",
-      "meetPrompt": "Ask how this dog greets people, settles after play and handles time alone."
-    },
-    {
-      "id": "guinea",
-      "name": "A pair of guinea pigs",
-      "kind": "Guinea pigs · coat type · compatible pair",
-      "archetype": "The Tiny Dinner Party",
-      "species": "small",
-      "minTime": 1,
-      "exercise": 0,
-      "connection": [
-        "team",
-        "quiet"
-      ],
-      "grooming": 1,
-      "setup": "habitat",
-      "summary": "Explore a compatible pair if you enjoy gentle daily interaction and can give two small animals a generous home.",
-      "tradeoff": "Two means space, cleaning and care for two. Guinea pigs need companionship from their own kind.",
-      "routine": "Provide a spacious enclosure, hiding places, hay, appropriate vitamin C intake and daily checks. Confirm a safe pairing and access to an experienced vet.",
-      "prototype": "Mark out an enclosure on your floor and price a week of food and bedding for a pair.",
-      "sources": [
-        "guinea"
-      ],
-      "sprite": 4,
-      "number": "05",
-      "care": "bedding",
-      "catch": "It's a table for two. Space and care for both.",
-      "color": "#ffd2bf",
-      "meetPrompt": "Ask whether the pair is compatible and how each animal responds to gentle handling."
-    },
-    {
-      "id": "hamster",
-      "name": "Syrian hamster",
-      "kind": "Hamster · species · housed singly",
-      "archetype": "The After-Hours Club",
-      "species": "small",
-      "minTime": 1,
-      "exercise": 0,
-      "connection": [
-        "watch",
-        "quiet"
-      ],
-      "grooming": 1,
-      "setup": "habitat",
-      "summary": "A Syrian hamster may be worth exploring if you enjoy observing nighttime activity without expecting daytime cuddles.",
-      "tradeoff": "Nighttime activity can be noisy. A small body still needs a large habitat; don’t wake a sleeping hamster to play.",
-      "routine": "Keep one Syrian hamster alone in a roomy habitat with deep bedding, hiding places and an appropriate wheel. Provide daily care and enrichment.",
-      "prototype": "Measure a habitat location outside your sleeping area and research suitable bedding and wheel sizes.",
-      "sources": [
-        "hamster"
-      ],
-      "sprite": 5,
-      "number": "06",
-      "care": "bedding",
-      "catch": "One hamster, a roomy home, and daytime sleep to respect.",
-      "color": "#ffce4a",
-      "meetPrompt": "Ask when this hamster is usually awake and how it responds to gentle handling."
-    },
-    {
-      "id": "betta",
-      "name": "Betta splendens",
-      "kind": "Fish · species · one fish in a prepared tank",
-      "archetype": "The Tiny-World Curator",
-      "species": "fish",
-      "minTime": 1,
-      "exercise": 0,
-      "connection": [
-        "watch"
-      ],
-      "grooming": 1,
-      "setup": "tank",
-      "summary": "Explore a betta if observation appeals to you and you want to learn how to care for a small aquatic environment.",
-      "tradeoff": "The aquarium is a living system. Water testing, heating, filtration and maintenance are part of the deal.",
-      "routine": "Prepare a cycled, gently filtered, heated 20L+ aquarium with a lid and cover. Monitor water quality; never put two males together.",
-      "prototype": "Learn the nitrogen cycle and price the entire tank setup before considering a fish.",
-      "sources": [
-        "betta"
-      ],
-      "sprite": 6,
-      "number": "07",
-      "care": "water",
-      "catch": "A heated, filtered, cycled tank. The water needs care too.",
-      "color": "#c8e9ea",
-      "meetPrompt": "Ask about the fish’s health and how to prepare and maintain its aquarium."
-    }
-  ],
-  "branchQuestions": [
-    {
-      "id": "grooming",
-      "stage": "ONE CURLY DETAIL",
-      "title": "A coat with a calendar. Deal?",
-      "note": "Poodles need regular grooming.",
-      "basis": [
-        "mini",
-        "poodle"
-      ],
-      "options": [
-        {
-          "value": "yes",
-          "label": "Brush, book, repeat. Deal."
-        },
-        {
-          "value": "no",
-          "label": "I'd rather skip the salon."
-        }
-      ]
-    },
-    {
-      "id": "night",
-      "stage": "A DIFFERENT SCHEDULE",
-      "title": "Your tiny roomie works nights. Okay?",
-      "note": "Hamsters sleep through much of the day.",
-      "basis": [
-        "hamster"
-      ],
-      "options": [
-        {
-          "value": "enjoy",
-          "label": "Perfect. I love a night show."
-        },
-        {
-          "value": "separate",
-          "label": "Sure, away from my bedroom."
-        },
-        {
-          "value": "sleep",
-          "label": "I'd prefer a daytime companion."
-        }
-      ]
-    }
-  ]
+// Breed descriptions suggest tendencies; coat and sex never drive matching.
+const CAT_DATA={
+ reviewed:'2026-09-29',
+ sources:{
+  traits:{name:'Mikkola et al. · Cat behavior traits (2021)',url:'https://pmc.ncbi.nlm.nih.gov/articles/PMC8300181/'},
+  breeds:{name:'Salonen et al. · Breed differences (2019)',url:'https://doi.org/10.1038/s41598-019-44324-x'},
+  demographic:{name:'Leech et al. · Cat demographics and personality (2022)',url:'https://doi.org/10.1016/j.applanim.2022.105570'},
+  outdoor:{name:'FelineVMA · Indoor/outdoor lifestyle (2024)',url:'https://catvets.com/resource/2024-indoor-outdoor-lifestyle-position-statement/'},
+  indoor:{name:'FelineVMA · Indoor cat needs (2025)',url:'https://catvets.com/resource/2025-meeting-the-physical-and-emotional-needs-of-indoor-cats/'},
+  pillars:{name:'AAFP/ISFM · Feline environmental needs',url:'https://journals.sagepub.com/doi/full/10.1177/1098612X13477537'},
+  colour:{name:'Delgado et al. · Perceptions of coat color',url:'https://doi.org/10.2752/175303712X13479798785779'},
+  colourStudy:{name:'Stelow et al. · Coat color and behavior',url:'https://doi.org/10.1080/10888705.2015.1081820'},
+  genetics:{name:'CFA · Basic feline genetics',url:'https://cfa.org/basic-feline-genetics/'},
+  household:{name:'TICA · Household cats',url:'https://tica.org/breed/household-pet/'},
+  pattern:{name:'CFA · Pattern is not a breed',url:'https://cfa.org/cat-talk/a-pattern-does-not-a-breed-make/'},
+  adult:{name:'ASPCA · Adopting an adult cat',url:'https://www.aspca.org/blog/four-reasons-give-senior-cats-lifesaving-chance'},
+  allergy:{name:'AAAAI · Pet allergies',url:'https://www.aaaai.org/conditions-treatments/allergies/pet-allergy'},
+  intercat:{name:'AAFP · Introducing cats',url:'https://catvets.com/resource/2024-intercat-tension-guidelines/'},
+  british:{name:'TICA · British Shorthair',url:'https://tica.org/breed/british-shorthair/'},
+  ragdoll:{name:'TICA · Ragdoll',url:'https://tica.org/breed/ragdoll/'},
+  russian:{name:'TICA · Russian Blue',url:'https://tica.org/breed/russian-blue/'},
+  maine:{name:'TICA · Maine Coon',url:'https://tica.org/breed/maine-coon/'},
+  siamese:{name:'TICA · Siamese',url:'https://tica.org/breed/siamese/'},
+  bengal:{name:'TICA · Bengal',url:'https://tica.org/breed/bengal/'},
+  burmese:{name:'TICA · Burmese',url:'https://tica.org/breed/burmese/'}
+ },
+ questions:[
+  {id:'greeting',stage:'THE HELLO',title:'You get home. Your ideal hello?',options:[
+   {value:'close',label:'A full-on greeting committee.'},{value:'near',label:'Company in the same room.'},{value:'space',label:'A nod from across the couch.'}]},
+  {id:'play',stage:'PLAY MODE',title:'The feather wand is out. You’re up for…',options:[
+   {value:'gentle',label:'A quick daily round.'},{value:'regular',label:'A proper play session.'},{value:'big',label:'Encore! Bring on the obstacle course.'}]},
+  {id:'voice',stage:'THE SOUNDTRACK',title:'Your cat has opinions. Volume?',options:[
+   {value:'chatty',label:'Let’s talk all day.'},{value:'some',label:'A few well-timed meows.'},{value:'quiet',label:'Mostly quiet, please.'}]},
+  {id:'guests',stage:'WHEN FRIENDS VISIT',title:'Your ideal cat at a party?',options:[
+   {value:'bold',label:'Inspects every guest.'},{value:'warm',label:'Warms up in their own time.'},{value:'reserved',label:'Prefers a secret hideout.'}]},
+  {id:'grooming',stage:'THE FUR SITUATION',title:'A regular brushing date?',options:[
+   {value:'yes',label:'Sounds lovely.'},{value:'simple',label:'Keep coat care simple, please.'}]},
+  {id:'outdoors',stage:'THE GREAT OUTDOORS',title:'How would your cat explore?',options:[
+   {value:'indoor',label:'Indoors, with play and perches.'},{value:'controlled',label:'A catio or supervised outings.'},{value:'roaming',label:'Free to wander outside.'}]},
+  {id:'coverage',stage:'YOUR ACTUAL WEEK',title:'When your day gets busy…',options:[
+   {value:'company',label:'Someone’s usually home.'},{value:'planned',label:'I’m out, but care and play are planned.'},{value:'uncertain',label:'My schedule is unpredictable. No backup yet.'}]},
+  {id:'origin',stage:'YOUR CAT STORY',title:'What sounds more like you?',options:[
+   {value:'individual',label:'Meet an adult cat whose personality is known.'},{value:'breed',label:'Explore a particular breed’s tendencies.'},{value:'open',label:'Surprise me. I’m open to either.'}]},
+  {id:'readiness',stage:'THE MOVE-IN CHECK',title:'Could a cat move in?',checklist:['Home, housemates and allergies checked','Daily care and veterinary budget covered','Hiding spots, scratching and play space planned'],options:[
+   {value:'ready',label:'Yes. The plans are in place.'},{value:'planning',label:'A few things to sort out.'},{value:'dreaming',label:'Just here to daydream.'}]}
+ ],
+ coats:[
+  {id:'orange',label:'Orange tabby',sprite:0},
+  {id:'tuxedo',label:'Tuxedo',sprite:1},
+  {id:'calico',label:'Calico',sprite:2},
+  {id:'tabby',label:'Brown tabby',sprite:3}
+ ],
+ cats:[
+  {id:'dsh_cuddle',type:'domestic',name:'Adult domestic shorthair',title:'The Couch Companion',sprite:0,traits:{social:2,play:0,voice:0,guests:1},coat:'simple',minPlay:0,company:'ordinary',color:'#ffd56a',scene:'You settle in after class. A cat chooses the cushion beside you, then stays for the whole chapter.',care:'Ask about this individual’s favorite kind of contact; “lap cat” cannot be read from fur.',detail:'Look for an adult whose foster notes mention seeking human company and enjoying calm play.',sources:['household','adult','traits']},
+  {id:'dsh_sideby',type:'domestic',name:'Adult domestic shorthair',title:'The Side-by-Side Scholar',sprite:1,traits:{social:1,play:1,voice:1,guests:1},coat:'simple',minPlay:0,company:'ordinary',color:'#b8e2ee',scene:'Your desk has two seats now: one for you, one for the cat who watches the cursor and joins the evening game.',care:'Meet the individual; a shelter may know whether they prefer play, petting or quiet company.',detail:'Ask a foster or shelter worker what this cat does on an ordinary afternoon, not just during one stressful visit.',sources:['household','adult','traits']},
+  {id:'dsh_quiet',type:'domestic',name:'Adult domestic shorthair',title:'The Secret Garden Cat',sprite:2,traits:{social:0,play:1,voice:0,guests:0},coat:'simple',minPlay:0,company:'ordinary',color:'#e8cbec',scene:'Guests come over and your cat takes the high perch. Later, when the room is quiet, they emerge for your familiar game.',care:'A safe hiding place and patient introductions matter more than a “shy” label.',detail:'Ask what helps this particular cat feel secure and how their behavior changes after they settle in.',sources:['household','adult','pillars']},
+  {id:'dsh_spark',type:'domestic',name:'Adult domestic shorthair',title:'The Tiny Tornado',sprite:3,traits:{social:1,play:2,voice:1,guests:2},coat:'simple',minPlay:1,company:'ordinary',color:'#ffba8d',scene:'A cardboard box becomes a fortress. Your curious cat turns the hallway into a racetrack, then comes back for round two.',care:'Plan climbing, scratching and regular interactive play for the actual cat you meet.',detail:'Ask a shelter to introduce you to an active adult cat and describe their play and recovery rhythm.',sources:['household','adult','indoor']},
+  {id:'british',type:'breed',name:'British Shorthair',title:'The Sofa Diplomat',sprite:4,traits:{social:0,play:0,voice:0,guests:1},coat:'simple',minPlay:0,company:'ordinary',color:'#d6dff4',scene:'You unpack after class. Your cat takes the next cushion and watches you work like a very round supervisor.',care:'Many prefer being beside you to being carried; every cat still needs play.',detail:'The breed is often described as calm and independent. Meet the individual before expecting a particular cuddle style.',sources:['british','traits']},
+  {id:'ragdoll',type:'breed',name:'Ragdoll',title:'The Gentle Shadow',sprite:5,traits:{social:2,play:0,voice:0,guests:1},coat:'regular',minPlay:0,company:'ordinary',color:'#c9e5f8',scene:'You open a book. A fluffy shadow settles nearby and follows you when you go to make tea.',care:'Plan regular combing and interactive play; never assume a cat likes being picked up.',detail:'Ask about the individual’s comfort with handling, and discuss breed health screening with a veterinarian or breeder.',sources:['ragdoll','traits']},
+  {id:'russian',type:'breed',name:'Russian Blue',title:'The Quiet Co-Conspirator',sprite:6,traits:{social:1,play:1,voice:0,guests:0},coat:'simple',minPlay:0,company:'ordinary',color:'#c3dfdb',scene:'After your guests leave, you pull out the toy hidden under the couch. Your silver sidekick is suddenly ready to play.',care:'Keep a quiet retreat and mentally interesting games available.',detail:'TICA describes reserve with strangers and affection with familiar people, but an individual may differ.',sources:['russian','traits']},
+  {id:'maine',type:'breed',name:'Maine Coon',title:'The Big Helpful Roommate',sprite:7,traits:{social:1,play:1,voice:1,guests:2},coat:'regular',minPlay:1,company:'ordinary',color:'#eacdab',scene:'You try to fold laundry. Your enormous assistant supervises every shirt, then asks for a game.',care:'Allow room for a large cat, a sturdy perch and regular coat care.',detail:'Many are social, playful companions. Check the individual’s handling style and health history.',sources:['maine','traits']},
+  {id:'siamese',type:'breed',name:'Siamese',title:'The Homework Commentator',sprite:8,traits:{social:2,play:2,voice:2,guests:2},coat:'simple',minPlay:1,company:'high',color:'#f7cf94',scene:'You tell one story about your day. Your cat replies with three, then joins your study session from the keyboard.',care:'Conversation and active company are part of the routine, not just the charm.',detail:'TICA describes Siamese as active, vocal and highly people-oriented. Ask how a real cat handles time alone.',sources:['siamese','traits']},
+  {id:'bengal',type:'breed',name:'Bengal',title:'The Parkour Professor',sprite:9,traits:{social:1,play:2,voice:1,guests:2},coat:'simple',minPlay:2,company:'ordinary',color:'#ffc384',scene:'Your evening starts with a puzzle feeder. Moments later, your athlete invents a new route across the shelves.',care:'A spotted coat is no substitute for extensive play and enrichment.',detail:'TICA describes high energy and curiosity. Meet the individual and plan climbing, puzzles and frequent interaction.',sources:['bengal','traits']},
+  {id:'burmese',type:'breed',name:'Burmese',title:'The Social Butterfly',sprite:10,traits:{social:2,play:1,voice:1,guests:2},coat:'simple',minPlay:1,company:'high',color:'#dcb8a3',scene:'Your video call ends. Your little co-host leaves the desk and claims the chair beside you for the debrief.',care:'Reliable company and play matter for this people-oriented profile.',detail:'TICA describes Burmese as affectionate and social. Ask the individual’s response to separation and other pets.',sources:['burmese','traits']}
+ ]
 };
-if(typeof module!=='undefined')module.exports=PET_DATA;
+if(typeof module!=='undefined')module.exports=CAT_DATA;
